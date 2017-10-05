@@ -15,8 +15,7 @@ public class BankSimMain {
     public static void main(String[] args) {
         Bank b = new Bank(NACCOUNTS, INITIAL_BALANCE);
         ReentrantLock bankLock = new ReentrantLock();
-        Semaphore semaphore = new Semaphore(10);
-        Semaphore signal = new Semaphore(1);
+        Semaphore semaphore = new Semaphore(NACCOUNTS);
         
         Thread[] threads = new Thread[NACCOUNTS];
         Thread testThread = new TestThread(b, semaphore);
