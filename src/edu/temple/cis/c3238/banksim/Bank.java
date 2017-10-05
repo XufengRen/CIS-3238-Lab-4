@@ -12,6 +12,7 @@ public class Bank {
     private final int initialBalance;
     private final int numAccounts;
     private boolean open;
+    
 
     public Bank(int numAccounts, int initialBalance) {
         open = true;
@@ -30,7 +31,7 @@ public class Bank {
         if (accounts[from].withdraw(amount)) {
             accounts[to].deposit(amount);
         }
-        if (shouldTest()) test();
+//        if (shouldTest()) test();
     }
 
     public void test() {

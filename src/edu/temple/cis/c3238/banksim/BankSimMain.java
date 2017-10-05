@@ -1,5 +1,8 @@
 package edu.temple.cis.c3238.banksim;
 
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * @author Cay Horstmann
  * @author Modified by Paul Wolfgang
@@ -11,12 +14,19 @@ public class BankSimMain {
 
     public static void main(String[] args) {
         Bank b = new Bank(NACCOUNTS, INITIAL_BALANCE);
+        ReentrantLock bankLock = new ReentrantLock();
+        Semaphore semaphore = new Semaphore(10);
+        Semaphore signal = new Semaphore(1);
+        
         Thread[] threads = new Thread[NACCOUNTS];
+        Thread testThread = new TestThread(b, semaphore);
         // Start a thread for each account
         for (int i = 0; i < NACCOUNTS; i++) {
-            threads[i] = new TransferThread(b, i, INITIAL_BALANCE);
+            threads[i] = new TransferThread(b, i, INITIAL_BALANCE, semaphore);
             threads[i].start();
         }
+        testThread.start();
+
         // Wait for all threads to finish
         for (int i = 0; i < NACCOUNTS; i++) {
             try {
@@ -25,8 +35,11 @@ public class BankSimMain {
                 // Ignore this
             }
         }
+        try {
+            testThread.join();
+        } catch (InterruptedException ex) {
+                // Ignore this
+        }
         b.test();
     }
 }
-
-
